@@ -19,11 +19,36 @@ function pacman(inputFile) {
   // Start writing your code here
 
   let coinsCollected = 0;
-  let data = fs.readFileSync(inputFile, "utf8");
-
-  console.log(data, `d: ${data[6]}`, `e: ${data[7]}`, `f: ${data[8]}`);
+  let processedData = processFile(inputFile);
+  console.log(processedData);
 
   //   return [finalXPos, finalYPos, coinsCollected];
+}
+
+function processFile(txtFile) {
+  let data = fs.readFileSync(txtFile, "utf8").split("\n");
+
+  return data.map((element) => {
+    const directions = "NSEW";
+    const whiteSpace = " ";
+    let number = "";
+    const arrayPair = [];
+
+    for (let i = 0; i <= element.length; i++) {
+      const character = element[i];
+
+      if (i === element.length) arrayPair.push(Number(number));
+      if (character === whiteSpace) {
+        arrayPair.push(Number(number));
+        number = "";
+      } else if (!directions.includes(character)) {
+        number += character;
+      } else {
+        return element;
+      }
+    }
+    return arrayPair;
+  });
 }
 
 module.exports.pacman = pacman;
