@@ -22,7 +22,11 @@ describe("pacman", function () {
     expect(main.pacman("edge.txt")).toEqual([-1, -1, 0]);
   });
 
-  xit("traverses runtime.txt", function () {
+  it("traverses runtime.txt", function () {
     expect(main.pacman("runtime.txt")).toEqual([2142, 147, 148]);
+  });
+
+  it("traverses small-test.txt", function () {
+    expect(main.pacman("small-test.txt")).toEqual([1, 4, 7]);
   });
 });

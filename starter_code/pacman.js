@@ -18,17 +18,29 @@ const fs = require("fs");
 function pacman(inputFile) {
   // Start writing your code here
   let processedData = processFile(inputFile);
-  let gameBoard = createBoard(processedData);
-  let coinsCollected = 0;
-  const startPosition = processedData[1];
-  const movements = processedData[2];
-  console.log(gameBoard);
+  const boardDimension = processedData[0];
+  const startPos = processedData[1];
+  const startPosX = startPos[0];
+  const startPosY = startPos[1];
 
-  //   return [finalXPos, finalYPos, coinsCollected];
+  if (
+    startPosY > boardDimension[1] ||
+    startPosX > boardDimension[0] ||
+    startPosY < 0 ||
+    startPosX < 0
+  ) {
+    return [-1, -1, 0];
+  } else {
+    let gameBoard = createBoard(processedData);
+
+    return traverseBoard(gameBoard, processedData);
+  }
 }
 
 function processFile(txtFile) {
   let data = fs.readFileSync(txtFile, "utf8").split("\n");
+
+  if (!data[data.length - 1].length) data.pop();
 
   return data.map((element) => {
     const directions = "NSEW";
@@ -64,12 +76,67 @@ function createBoard(boardData) {
     }
   }
 
-  for (let k = 3; k < boardData.length - 1; k++) {
+  for (let k = 3; k < boardData.length; k++) {
     const wall = boardData[k];
 
     board[wall[1]][wall[0]] = "WALL";
   }
+
   return board;
+}
+
+function traverseBoard(board, boardData) {
+  const startPos = boardData[1];
+  const startPosX = startPos[0];
+  const startPosY = startPos[1];
+  let currPosX = startPosX;
+  let currPosY = startPosY;
+  const movements = boardData[2];
+  let coinsCollected = 0;
+
+  for (let i = -1; i < movements.length; i++) {
+    const direction = movements[i];
+    if (i === -1) {
+      board[startPosY][startPosX] = "VISITED";
+    } else {
+      if (direction === "N") {
+        if (board[currPosY + 1][currPosX] === "COIN") {
+          currPosY++;
+          coinsCollected++;
+          board[currPosY][currPosX] = "VISITED";
+        } else if (board[currPosY + 1][currPosX] === "VISITED") {
+          currPosY++;
+        }
+      } else if (direction === "S") {
+        if (board[currPosY - 1][currPosX] === "COIN") {
+          currPosY--;
+          coinsCollected++;
+          board[currPosY][currPosX] = "VISITED";
+        } else if (board[currPosY - 1][currPosX] === "VISITED") {
+          currPosY--;
+        }
+      } else if (direction === "E") {
+        if (board[currPosY][currPosX + 1] === "COIN") {
+          currPosX++;
+          coinsCollected++;
+          board[currPosY][currPosX] = "VISITED";
+        } else if (board[currPosY][currPosX + 1] === "VISITED") {
+          currPosX++;
+        }
+      } else {
+        if (board[currPosY][currPosX - 1] === "COIN") {
+          currPosX--;
+          coinsCollected++;
+          board[currPosY][currPosX] = "VISITED";
+        } else if (board[currPosY][currPosX - 1] === "VISITED") {
+          currPosX--;
+        }
+      }
+    }
+    // console.log(direction, currPosX, currPosY, board);
+  }
+
+  return [currPosX, currPosY, coinsCollected];
 }
 
 module.exports.pacman = pacman;
