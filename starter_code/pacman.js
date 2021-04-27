@@ -17,10 +17,12 @@ const fs = require("fs");
  */
 function pacman(inputFile) {
   // Start writing your code here
-
-  let coinsCollected = 0;
   let processedData = processFile(inputFile);
-  console.log(processedData);
+  let gameBoard = createBoard(processedData);
+  let coinsCollected = 0;
+  const startPosition = processedData[1];
+  const movements = processedData[2];
+  console.log(gameBoard);
 
   //   return [finalXPos, finalYPos, coinsCollected];
 }
@@ -49,6 +51,25 @@ function processFile(txtFile) {
     }
     return arrayPair;
   });
+}
+
+function createBoard(boardData) {
+  const boardDimension = boardData[0];
+  let board = [];
+
+  for (let i = 0; i < boardDimension[1]; i++) {
+    board.push([]);
+    for (let j = 0; j < boardDimension[0]; j++) {
+      board[i][j] = "COIN";
+    }
+  }
+
+  for (let k = 3; k < boardData.length - 1; k++) {
+    const wall = boardData[k];
+
+    board[wall[1]][wall[0]] = "WALL";
+  }
+  return board;
 }
 
 module.exports.pacman = pacman;
