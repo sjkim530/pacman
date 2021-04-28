@@ -29,4 +29,12 @@ describe("pacman", function () {
   it("traverses small-test.txt", function () {
     expect(main.pacman("small-test.txt")).toEqual([1, 4, 7]);
   });
+
+  it("traverses start-on-wall.txt", function () {
+    expect(main.pacman("start-on-wall.txt")).toEqual([-1, -1, 0]);
+  });
+
+  it("traverses cannot-move.txt", function () {
+    expect(main.pacman("cannot-move.txt")).toEqual([0, 0, 0]);
+  });
 });
