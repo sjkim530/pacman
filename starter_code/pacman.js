@@ -60,25 +60,14 @@ function processFile(txtFile) {
   if (!data[data.length - 1].length) data.pop();
 
   return data.map((element) => {
-    const directions = "NSEW";
     const whiteSpace = " ";
-    let number = "";
-    const arrayPair = [];
 
-    for (let i = 0; i <= element.length; i++) {
-      const character = element[i];
-
-      if (i === element.length) arrayPair.push(Number(number));
-      if (character === whiteSpace) {
-        arrayPair.push(Number(number));
-        number = "";
-      } else if (!directions.includes(character)) {
-        number += character;
-      } else {
-        return element;
-      }
+    if (element.includes(whiteSpace)) {
+      let array = element.split(" ");
+      return [Number(array[0]), Number(array[1])];
+    } else {
+      return element;
     }
-    return arrayPair;
   });
 }
 
@@ -132,7 +121,8 @@ function traverseBoard(board, boardData) {
   for (let i = -1; i < movements.length; i++) {
     const direction = movements[i];
     if (i === -1) {
-      board[startPosY][startPosX] = "VISITED";
+      if (board[startPosY][startPosX] === "WALL") return [-1, -1, 0];
+      else board[startPosY][startPosX] = "VISITED";
     } else {
       if (direction === "N") {
         if (board[currPosY + 1][currPosX] === "COIN") {
@@ -169,7 +159,6 @@ function traverseBoard(board, boardData) {
       }
     }
   }
-
   return [currPosX, currPosY, coinsCollected];
 }
 
